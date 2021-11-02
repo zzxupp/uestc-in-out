@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>页面记住我功能Demo</title>
+</head>
+<body>
+<div style="margin: 18% 43%;text-align: center;">
+    <p>
+        <span>账号:</span>
+        <input type="text" id="account">
+    </p>
+    <p>
+        <span>密码:</span>
+        <input type="password" id="pwd">
+    </p>
+    <p>
+        <input type="checkbox" id="rememberMe">
+        <span style="vertical-align: middle">记住我</span>
+    </p>
+    <br>
+    <br>
+    <p>
+        <input type="button" id="loginBtn" value="登录">
+    </p>
+ 
+</div>
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+ 
+</body>
+<script>
+    $(function () {
+ 
+        initView();
+ 
+        $("#loginBtn").click(function () {
+            if ($("#rememberMe").is(":checked")) {
+                setCookie("cookie_account", $("#account").val());
+                setCookie("cookie_password", $("#pwd").val());
+                setCookie("rememberMe", true);
+            } else {
+                delCookie("cookie_account");
+                delCookie("cookie_password");
+                delCookie("rememberMe");
+            }
+ 
+ 
+            window.location.reload()
+        });
+    });
+ 
+    function initView() {
+        if (getCookie("cookie_account")) {
+            $("#account").val(getCookie("cookie_account"));
+        }
+        if (getCookie("cookie_password")) {
+            $("#pwd").val(getCookie("cookie_password"));
+        }
+        if (getCookie("rememberMe")) {
+            $("#rememberMe").attr("checked", getCookie("rememberMe"));
+        }
+        $("#account").focus(function () {
+            this.select();
+        });
+        $("#pwd").focus(function () {
+            this.select();
+        });
+    }
+ 
+    /**
+     * 写入cookie
+     * @param name  cookie 名
+     * @param value  cookie 值
+     */
+    function setCookie(name, value) {
+        var Days = 30; //此 cookie 将被保存 30 天
+        var exp = new Date();
+        exp.setTime(exp.getTime() + Days * 24 * 60 * 60 * 1000);
+        document.cookie = name + "=" + escape(value) + ";expires=" + exp.toGMTString();
+    }
+    /**
+     * 删除cookie
+     * @param name
+     */
+    function delCookie(name) {
+        var exp = new Date();
+        exp.setTime(exp.getTime() - 1);
+        var cval = getCookie(name);
+        if (cval != null) document.cookie = name + "=" + cval + ";expires=" + exp.toGMTString();
+    }
+    /**
+     * 读取cookie
+     * @param name
+     * @returns
+     */
+    function getCookie(name) {
+        var arr = document.cookie.match(new RegExp("(^| )" + name + "=([^;]*)(;|$)"));
+        if (arr != null)
+            return unescape(arr[2]);
+        return null;
+    }
+ 
+ 
+</script>
+</html>
